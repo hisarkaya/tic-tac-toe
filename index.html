@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+  <div class="outer-container">
+    <div class="header">
+      <div>
+        <p class="score-1"><span class="name"></span><span class="points"></span></p>
+        <div class="player-one-turn">
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="player-two-turn">
+          <p>&nbsp;</p>
+        </div>
+        <p class="score-2"><span class="name"></span><span class="points"></span></p>
+      </div>
+    </div>
+
+    <div class="board-container">
+      <div class="play-mode-box">
+        <p>how do you want to play?</p>
+        <button class="one-player">one player</button>
+        <button class="two-player">two player</button>
+      </div>
+      <div class="symbol-box">
+        <p>would you like to be X or O?</p>
+        <button class="choose-x">X</button>
+        <button class="choose-o">O</button>
+        <button class="back-button"><i class="fa fa-arrow-left"></i> back</button>
+      </div>
+      <div class="board-box">
+        <div class="draw-message">
+          <p>it was a draw..</p>
+          <button class="replay"><i class="fa fa-repeat"></i> replay</button>
+        </div>
+        <div class="lose-message">
+          <p>uh oh, you lost..</p>
+          <button class="replay"><i class="fa fa-repeat"></i> replay</button>
+        </div>
+        <div class="win-message">
+          <p>you won!!! :)</p>
+          <button class="replay"><i class="fa fa-repeat"></i> replay</button>
+        </div>
+        <table class="game-board">
+          <tr>
+            <td id="0"></td>
+            <td id="1"></td>
+            <td id="2"></td>
+          </tr>
+          <tr>
+            <td id="3"></td>
+            <td id="4"></td>
+            <td id="5"></td>
+          </tr>
+          <tr>
+            <td id="6"></td>
+            <td id="7"></td>
+            <td id="8"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="footer"><button class="reset-all">reset all</button></div>
+
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/template.js"></script>
+  <script src="js/view.js"></script>
+  <script src="js/controller.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
