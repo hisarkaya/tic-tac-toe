@@ -30,6 +30,10 @@
 
   }
 
+  Model.prototype.getWinPatterns = function() {
+    return winPatterns;
+  }
+
   Model.prototype.getPlayers = function() {
     return players;
   }
@@ -91,6 +95,8 @@
     multiPlay = mode;
     callback();
   }
+
+
 
   Model.prototype.move = function(cell, callback) {
     var player = players[turn],

@@ -1,6 +1,24 @@
 (function(window) {
   'use strict';
 
+  var padLeadingZeros = function(str) {
+      return str.length < 9 ?
+        '0'.repeat(9 - str.length).concat(str) :
+        str;
+    },
+    win = function(str, winPatterns) {
+      var decimal = parseInt(str, 2),
+        length = winPatterns.length,
+        i;
+
+      for (i = 0; i < length; i++) {
+        if ((winPatterns[i] & decimal) === winPatterns[i]) {
+          return winPatterns[i];
+        }
+      }
+      return 0;
+    };
+
   function Controller(model, view) {
     var self = this;
     self.model = model;
@@ -33,14 +51,13 @@
   }
 
   Controller.prototype.init = function() {
-    var self = this,
-      rnd = Math.floor(Math.random() * 2);
-    self.model.init(rnd);
+    var self = this;
+    self.model.init(Math.floor(Math.random() * 2));
   }
 
   Controller.prototype.setView = function(screen) {
-    var self = this;
-    var display = screen || 'playMode';
+    var self = this,
+      display = screen || 'playMode';
     self.view.render(display);
   }
 
@@ -52,10 +69,11 @@
   };
 
   Controller.prototype.setSymbol = function(symbol) {
-    var self = this;
+    var self = this,
+      data;
     self.model.setSymbol(symbol, function() {
       self.init();
-      var data = {
+      data = {
         players: self.model.getPlayers(),
         turn: self.model.getTurn(),
         multiPlay: self.model.getPlayMode()
@@ -80,9 +98,10 @@
   };
 
   Controller.prototype.replay = function() {
-    var self = this;
+    var self = this,
+      data;
     self.model.replay(function() {
-      var data = {
+      data = {
         players: self.model.getPlayers(),
         turn: self.model.getFirstTurn(),
         multiPlay: self.model.getPlayMode()
@@ -96,18 +115,61 @@
 
   Controller.prototype.findSlot = function() {
     var self = this,
-      str = (parseInt(self.model.getPlayers()[0].moveStr, 2) | parseInt(self.model.getPlayers()[1].moveStr, 2)).toString(2);
-    str = str.length < 9 ?
-      '0'.repeat(9 - str.length).concat(str) :
-      str;
-    return str.indexOf('0');
+      winPatterns = self.model.getWinPatterns(),
+      players = self.model.getPlayers(),
+      availableSlots = padLeadingZeros((parseInt(players[0].moveStr, 2) |
+        parseInt(players[1].moveStr, 2)).toString(2)).split('').map(
+        function(slot, index) {
+          if (slot === '0') {
+            return index;
+          }
+        }
+      ).filter(function(slot) {
+        return slot !== undefined;
+      }),
+      length = availableSlots.length,
+      i, tempMoveStr,
+      dummyMove;
+
+    for (i = 0; i < length; i += 1) {
+      var moveStr1 = players[1].moveStr.split('');
+      moveStr1[availableSlots[i]] = '1';
+      if (win(moveStr1.join(''), winPatterns)) {
+        return availableSlots[i];
+      }
+    }
+
+    for (i = 0; i < length; i += 1) {
+      var moveStr0 = players[0].moveStr.split('');
+      moveStr0[availableSlots[i]] = '1';
+      if (win(moveStr0.join(''), winPatterns)) {
+        return availableSlots[i];
+      }
+    }
+
+    for (i = 0; i < length; i += 1) {
+      if (availableSlots[i] === 4) {
+        return availableSlots[i];
+      }
+    }
+
+    for (i = 0; i < length; i += 1) {
+      if (availableSlots[i] === 0 || availableSlots[i] === 2 ||
+        availableSlots[i] === 6 || availableSlots[i] === 8) {
+        return availableSlots[i];
+      }
+    }
+
+    dummyMove = (parseInt(players[0].moveStr, 2) |
+      parseInt(players[1].moveStr, 2)).toString(2);
+    return padLeadingZeros(dummyMove).indexOf('0');
   }
 
   Controller.prototype.move = function(cell) {
     var self = this,
       computerMoveCell;
 
-    if(self.model.getLock()) {
+    if (self.model.getLock()) {
       return;
     }
 
@@ -152,7 +214,7 @@
             self.view.render('result', {
               turn: self.model.getTurn(),
               multiPlay: self.model.getPlayMode(),
-              draw: moves.indexOf(' ') < 0  && !!!winResult
+              draw: moves.indexOf(' ') < 0 && !!!winResult
             });
           }
         });
