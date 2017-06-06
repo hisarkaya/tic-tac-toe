@@ -167,38 +167,8 @@
 
   Controller.prototype.move = function(cell) {
     var self = this,
-      computerMoveCell;
-
-    if (self.model.getLock()) {
-      return;
-    }
-
-    self.model.move(cell, function(winResult, moves) {
-      self.view.render('turnInfo', {
-        turn: self.model.getTurn()
-      });
-      self.view.render('gameBoard', {
-        winResult,
-        moves
-      });
-      if (winResult || moves.indexOf(' ') === -1) {
-        self.view.render('scores', {
-          score1: self.model.getPlayers()[0].score,
-          score2: self.model.getPlayers()[1].score
-        });
-        self.view.render('result', {
-          turn: self.model.getTurn(),
-          multiPlay: self.model.getPlayMode(),
-          draw: moves.indexOf(' ') < 0 && !!!winResult
-        });
-      }
-    });
-
-    if (!self.model.getPlayMode() && self.model.getTurn()) {
-      self.model.setLock(1);
-      setTimeout(function() {
-        computerMoveCell = self.findSlot();
-        self.model.move(computerMoveCell, function(winResult, moves) {
+      moveProcess = function(slot) {
+        self.model.move(slot, function(winResult, moves) {
           self.view.render('turnInfo', {
             turn: self.model.getTurn()
           });
@@ -217,7 +187,17 @@
               draw: moves.indexOf(' ') < 0 && !!!winResult
             });
           }
-        });
+        })
+      };
+
+    if (self.model.getLock()) {
+      return;
+    }
+    moveProcess(cell);
+    if (!self.model.getPlayMode() && self.model.getTurn()) {
+      self.model.setLock(1);
+      setTimeout(function() {
+        moveProcess(self.findSlot());;
         self.model.setLock(0);
       }, 1000);
     }

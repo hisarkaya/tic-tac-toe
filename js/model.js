@@ -96,8 +96,6 @@
     callback();
   }
 
-
-
   Model.prototype.move = function(cell, callback) {
     var player = players[turn],
         moveStr = player.moveStr,

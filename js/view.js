@@ -129,12 +129,8 @@
           }
         }
       }
-
-
       break;
     }
-
-
   }
 
   View.prototype.bind = function(event, handler) {
@@ -182,11 +178,8 @@
           handler();
         });
         break;
-    default:
-
     }
   }
-
 
   window.app = window.app || {};
   window.app.View = View;
